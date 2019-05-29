@@ -1,3 +1,14 @@
+from OpenGL.GL import *
+from OpenGL.GLU import *
+from OpenGL.GLUT import *
+
+def Parallelepiped(vertices):
+	glBegin(GL_LINES)
+	for edge in edges:
+		for vertex in edge:
+			glVertex3fv(vertices[vertex])
+	glEnd()
+
 vertices_1 = (
 	(-1, -1, 1), 
 	(1, -1, 1), 
@@ -12,23 +23,23 @@ vertices_1 = (
 vertices_2 = (
 	vertices_1[2], 
 	vertices_1[3], 
-	(3, 5, 1), 
-	(5, 5, 1), 
+	(-1, 7, 1), 
+	(1, 7, 1), 
 	vertices_1[6], 
 	vertices_1[7], 
-	(3, 5, -1), 
-	(5, 5, -1) 
+	(-1, 7, -1), 
+	(1, 7, -1) 
 	)
 
 vertices_3 = ( 
 	vertices_2[2],
 	vertices_2[3],
-	(7, 7, 1), 
-	(9, 7, 1), 
+	(-1, 11, 1), 
+	(1, 11, 1), 
 	vertices_2[6],
 	vertices_2[7],
-	(7, 7, -1), 
-	(9, 7, -1)
+	(-1, 11, -1), 
+	(1, 11, -1)
 	)
 
 edges = (
