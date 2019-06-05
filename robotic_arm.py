@@ -2,15 +2,20 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
 from vertices import *
+from follow_target import *
+from convert import *
 
+cnv = Convert()
 	
 class SimpleRobotArm:
 
 	def __init__(self):
 		self.name= "Simple Robot Arm"
-		self.shoulder = 0.0
+		self.shoulder = 90.0
 		self.elbow = 0.0
 		self.arm = 0.0
+
+		self.fl = FollowTarget(3,3,90.0,0.0,0.0)
 
 	def run(self):
 		glutInit(sys.argv)
