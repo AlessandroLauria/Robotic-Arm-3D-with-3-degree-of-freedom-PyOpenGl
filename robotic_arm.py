@@ -8,7 +8,7 @@ class SimpleRobotArm:
 
 	def __init__(self):
 		self.name= "Simple Robot Arm"
-		self.shoulder = 90.0
+		self.shoulder = 0.0
 		self.elbow = 0.0
 		self.arm = 0.0
 
@@ -61,19 +61,19 @@ class SimpleRobotArm:
 
 	def keys(self,*args):
 		key = args[0]
-		if (key == 'z'):
+		if (key == b'z'):
 			self.shoulder = (self.shoulder+5) % 360
-		elif (key=='x'):
+		elif (key==b'x'):
 			self.shoulder = (self.shoulder-5) % 360
-		elif (key=='a'):
+		elif (key==b'a'):
 			self.elbow = (self.elbow+5) % 360
-		elif (key=='s'):
+		elif (key==b's'):
 			self.elbow = (self.elbow-5) % 360
-		elif (key=='q'):
+		elif (key==b'q'):
 			self.arm = (self.arm+5) % 360
-		elif (key=='w'):
+		elif (key==b'w'):
 			self.arm = (self.arm-5) % 360
-		elif(key=='e'):
+		elif(key==b'e'):
 			glRotatef(1, 0.0, 0.0, 0.0)
 		glutPostRedisplay()
 
@@ -87,5 +87,5 @@ class SimpleRobotArm:
 		glTranslatef (0.0, 0.0, -6.0)
 
 if __name__ == '__main__':
-    app = SimpleRobotArm()
-    app.run()
+	app = SimpleRobotArm()
+	app.run()
