@@ -1,4 +1,7 @@
 import math
+from convert import Convert
+
+cnv = Convert()
 
 class FollowTarget:
 
@@ -23,11 +26,25 @@ class FollowTarget:
 
     # update angles to get the target in 2d
     def follow_target_2d(self, th1, th2, th3, target_x, target_y):
+
+        # We need radiant angles to perform operations
+        th1 = cnv.from_degrees_to_rad(th1)
+        th2 = cnv.from_degrees_to_rad(th2)
+        th3 = cnv.from_degrees_to_rad(th3)
+
         th2 = math.atan2(
-                    math.sqrt(1 - ((target_x**2 + target_y**2 - self.l1**2 - self.l2**2)/(2*self.l1*self.l2)**2)),
+                    math.sqrt(abs(1 - ((target_x**2 + target_y**2 - self.l1**2 - self.l2**2)/(2*self.l1*self.l2)**2))),
                     (target_x ** 2 + target_y ** 2 - self.l1 ** 2 - self.l2 ** 2) / (2 * self.l1 * self.l2) ** 2
                     )
         th1 = math.atan2(target_x, target_y) - math.atan2(self.l2*math.sin(th2), self.l1 + self.l2*math.cos(th2))
 
-        #FIX ME: aggiungere th3, al momento sto provando solo con th1
+        th3 = th3 - th1 - th2
+
+        # Convert the results in degrees and return
+        th1 = cnv.from_rad_to_degrees(th1)
+        th2 = cnv.from_rad_to_degrees(th2)
+        th3 = cnv.from_rad_to_degrees(th3)
+
+        print("[follow target] th: ", th1, th2, th3)
+
         return th1, th2, th3
