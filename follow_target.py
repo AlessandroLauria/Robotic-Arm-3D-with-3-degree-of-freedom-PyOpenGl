@@ -31,6 +31,9 @@ class FollowTarget:
         th1 = cnv.from_degrees_to_rad(th1)
         th2 = cnv.from_degrees_to_rad(th2)
         th3 = cnv.from_degrees_to_rad(th3)
+        th1_original = th1
+        th2_original  = th2
+        th3_original  = th3
 
         th2 = math.atan2(
                     math.sqrt(abs(1 - ((target_x**2 + target_y**2 - self.l1**2 - self.l2**2)/(2*self.l1*self.l2)**2))),
@@ -38,7 +41,8 @@ class FollowTarget:
                     )
         th1 = math.atan2(target_x, target_y) - math.atan2(self.l2*math.sin(th2), self.l1 + self.l2*math.cos(th2))
 
-        th3 = th3 - th1 - th2
+        th3 = (th1_original + th2_original + th3_original) - th1 - th2
+
 
         # Convert the results in degrees and return
         th1 = cnv.from_rad_to_degrees(th1)
