@@ -3,7 +3,7 @@ from convert import Convert
 
 cnv = Convert()
 
-class FollowTarget:
+class ReachTarget:
 
     def __init__(self, l1, l2, th1, th2, th3):
         # Arm lenghts
@@ -25,7 +25,7 @@ class FollowTarget:
         self.target_z = z
 
     # update angles to get the target in 2d
-    def follow_target_2d(self, th1, th2, th3, target_x, target_y):
+    def reach_target_2d(self, th1, th2, th3, target_x, target_y):
 
         # We need radiant angles to perform operations
         th1 = cnv.from_degrees_to_rad(th1)
