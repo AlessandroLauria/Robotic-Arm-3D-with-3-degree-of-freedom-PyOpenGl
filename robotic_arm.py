@@ -116,7 +116,7 @@ class SimpleRobotArm:
 		elif(key==b'e'):
 			glRotatef(1.0, 0.0, 0.0, 0.0)
 		elif (key == b'l'):
-			self.shoulder, self.elbow, self.arm = self.fl.follow_target_2d(self.shoulder, self.elbow, self.arm, 100, -100)
+			self.shoulder, self.elbow, self.arm = self.fl.reach_target_2d(self.shoulder, self.elbow, self.arm, 100, -100)
 		elif (key == b'p'):
 			self.shoulder = 90.0
 			self.elbow = 0.0
