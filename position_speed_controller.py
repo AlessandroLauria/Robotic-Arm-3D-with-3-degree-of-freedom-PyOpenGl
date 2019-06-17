@@ -3,11 +3,11 @@ import math
 
 GRAVITY = 9.81
 
-class Pendolo:
+class Braccio:
 
-    def __init__(self, _M, _b):
+    def __init__(self, _M, _b, _T):
         self.w = 0
-        self.theta = 0
+        self.theta = _T
         self.M = _M
         self.b = _b
 
@@ -109,53 +109,4 @@ class ProfilePositionController:
         return s * self.__output_speed
 
 
-delta_t = 1e-3 # 1 ms
 
-braccio = Pendolo(6.0, 4.0)
-
-speed_controller = PIDSat(10000, 20000, 0, 100)
-position_controller = ProfilePositionController(0.1, 0.02, 0.02)
-
-t = 0.0
-
-target = math.radians(180)
-
-vettore_theta = [ ]
-vettore_w = [ ]
-vettore_wt = [ ]
-vettore_tempi = [ ]
-vettore_output = [ ]
-
-while t < 50:
-
-    w_target = position_controller.evaluate(target, braccio.theta, braccio.w, delta_t)
-
-    output = speed_controller.evaluate(w_target, braccio.w, delta_t)
-    braccio.evaluate(output, delta_t)
-
-    t = t + delta_t
-
-    vettore_w.append(braccio.w)
-    vettore_wt.append(w_target)
-    vettore_theta.append(math.degrees(braccio.theta))
-    vettore_output.append(output)
-    vettore_tempi.append(t)
-
-
-pylab.figure(1)
-pylab.plot(vettore_tempi, vettore_wt, 'b-+', label='target, w(t)')
-pylab.plot(vettore_tempi, vettore_w, 'r-+', label='vel, w(t)')
-pylab.xlabel('time')
-pylab.legend()
-
-pylab.figure(2)
-pylab.plot(vettore_tempi, vettore_theta, 'b-+', label='position, theta(t)')
-pylab.xlabel('time')
-pylab.legend()
-
-pylab.figure(3)
-pylab.plot(vettore_tempi, vettore_output, 'b-+', label='force')
-pylab.xlabel('time')
-pylab.legend()
-
-pylab.show()

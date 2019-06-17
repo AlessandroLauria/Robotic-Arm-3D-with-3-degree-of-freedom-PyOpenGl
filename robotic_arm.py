@@ -1,8 +1,11 @@
+# coding=utf-8
+
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
 from vertices import *
 from reach_target import *
+from position_speed_controller import *
 from time import sleep
 
 
@@ -62,8 +65,6 @@ class SimpleRobotArm:
 		glutMainLoop()
 
 	def display(self):
-
-		print("Display")
 		#self.shoulder, self.elbow, self.arm = self.fl.follow_target_2d(self.shoulder, self.elbow, self.arm, 100, 30)
 
 
@@ -87,7 +88,7 @@ class SimpleRobotArm:
 		glPopMatrix()
 
 		glTranslatef(1.0, 0.0, 0.0)
-		glRotatef(self.arm, 0.0, 1.0, 1.0)
+		glRotatef(self.arm, 0.0, 0.0, 1.0)
 		glTranslatef(1.0, -0.8, 0.0)
 		glPushMatrix()
 		glScalef(1.0, 0.2, 0.5)
@@ -110,7 +111,6 @@ class SimpleRobotArm:
 			self.elbow = (self.elbow-5) % 360
 		elif (key==b'q'):
 			self.arm = (self.arm+5) % 360
-			print(self.arm)
 		elif (key==b'w'):
 			self.arm = (self.arm-5) % 360
 		elif(key==b'e'):
@@ -123,6 +123,8 @@ class SimpleRobotArm:
 			self.arm = 0.0
 		elif (key == b't'):
 			self.follow_target_slowly(100, -100)
+		elif (key == b'c'):
+			self.follow_target_controller(100, -100)
 		glutPostRedisplay()
 
 	def reshape(self, w, h):
@@ -136,34 +138,70 @@ class SimpleRobotArm:
 
 
 	def follow_target_slowly(self, target_x_final, target_y_final, target_z_final = 0):
-		#Start target (current position)
-		current_target_x = 0
-		current_target_y = 0
-		current_target_z = 0
-		deltaT = 0.00001
-		i = 0
 		finalShoulder, finalElbow, finalArm = self.fl.reach_target_2d(self.shoulder, self.elbow, self.arm, target_x_final, target_y_final)
 		finalShoulder = round(finalShoulder, 1)
 		finalElbow = round(finalElbow, 1)
 		finalArm = round(finalArm, 1)
+	
+		while True:
+			self.shoulder = round(self.shoulder, 1)
+			self.elbow = round(self.elbow, 1)
+			self.arm = round(self.arm, 1)
+			if self.shoulder < finalShoulder:
+				self.shoulder += 0.1
+			elif self.shoulder > finalShoulder:
+				self.shoulder -= 0.1
+			if self.elbow < finalElbow:
+				self.elbow += 0.1
+			elif self.elbow > finalElbow:
+				self.elbow -= 0.1
+			if self.arm < finalArm:
+				self.arm += 0.1
+			elif self.arm > finalArm:
+				self.arm -= 0.1
+			elif self.arm == finalArm and self.elbow == finalElbow and self.shoulder == finalShoulder:
+				break
+			self.display()
 
-		if self.shoulder < finalShoulder:
-			self.shoulder += 0.1
-		elif self.shoulder > finalShoulder:
-			self.shoulder -= 0.1
-		if self.elbow < finalElbow:
-			self.elbow += 0.1
-		elif self.elbow > finalElbow:
-			self.elbow -= 0.1
-		if self.arm < finalArm:
-			self.arm += 0.1
-		elif self.arm > finalArm:
-			self.arm -= 0.1
+
+	def follow_target_controller(self, target_x_final, target_y_final, target_z_final = 0):
+		delta_t = 1e-3 # 1 ms
+
+		shoulder = Braccio(6.0, 4.0, self.shoulder)
+		elbow = Braccio(6.0, 4.0, self.elbow)
+		arm = Braccio(6.0, 4.0, self.arm)
+
+		speed_controller = PIDSat(10000, 20000, 0, 100)
+		position_controller = ProfilePositionController(0.1, 0.02, 0.02)
+
+		t = 0.0
+
+		finalShoulder, finalElbow, finalArm = self.fl.reach_target_2d(self.shoulder, self.elbow, self.arm, target_x_final, target_y_final)
+
+		while t < 10:
+
+		    w_target_S = position_controller.evaluate(finalShoulder, shoulder.theta, shoulder.w, delta_t)
+		    w_target_E = position_controller.evaluate(finalElbow, elbow.theta, elbow.w, delta_t)
+		    w_target_A = position_controller.evaluate(finalArm, arm.theta, arm.w, delta_t)
+
+		    output_S = speed_controller.evaluate(w_target_S, shoulder.w, delta_t)
+		    output_E = speed_controller.evaluate(w_target_E, elbow.w, delta_t)
+		    output_A = speed_controller.evaluate(w_target_A, arm.w, delta_t)
+		    
+		    shoulder.evaluate(output_S, delta_t)
+		    elbow.evaluate(output_E, delta_t)
+		    arm.evaluate(output_A, delta_t)
+
+		    self.shoulder = shoulder.theta
+		    self.elbow = elbow.theta
+		    self.arm = arm.theta
+		    print("shoulder: ", self.shoulder, " elbow: ", self.elbow, " arm: ", self.arm)
+
+		    t = t + delta_t
+		    self.display()
 
 		#self.shoulder, self.elbow, self.arm = self.fl.follow_target_2d(self.shoulder, self.elbow, self.arm, current_target_x, current_target_y)
-		i += 1
 		#print("Al giro {}, current_target_x vale: {}, current_target_y vale: {}, current_target_z vale: {}, gli angoli sono: shoulder {}, elbow {}, arm {}".format(i, current_target_x, current_target_y, current_target_z, self.shoulder, self.elbow, self.arm))
-		self.display()
 		#sleep(deltaT)
 
 		# TODO: Implementare correttamente il controllore posizione velocità con target finale i tre angoli.
