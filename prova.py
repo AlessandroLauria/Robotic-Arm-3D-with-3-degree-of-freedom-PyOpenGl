@@ -152,7 +152,7 @@ th3_plot = []
 
 time = []
 
-while t < 5:
+while t < 10:
 
     x_current_provv, y_current_provv, alpha_c = cinematica_diretta(current_th1, current_th2, current_th3)
     #print("Giro numero: ", len(time), " -->",x_current_provv, y_current_provv, alpha_c, " con angoli th1, th2, th3 -->", current_th1, current_th2, current_th3)

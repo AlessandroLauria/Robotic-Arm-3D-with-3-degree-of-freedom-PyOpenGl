@@ -112,15 +112,17 @@ class ProfilePositionController:
         return s * self.__output_speed
 
 
-L1 = 6
+L1 = 2
 L2 = 2
 L3 = 2
 
 def cinematica_inversa(Xt, Yt, alpha_t):
 
     num = ((math.pow(Xt,2) + math.pow(Yt,2) - math.pow(L1,2) - math.pow(L2,2))/(2*L1*L2))
-    print("NUm-->", num)
-    th2 = math.atan2(math.sqrt(1-(num**2)), num)
+    diff = 1-(math.pow(num,2))
+    if diff < 0:
+        diff = 0
+    th2 = math.atan2(math.sqrt(diff), num)
     th1 = math.atan2(Yt,Xt) - math.atan2(L2*math.sin(th2), L1 + L2*math.cos(th2))
     th3 = alpha_t - th1 - th2
 

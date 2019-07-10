@@ -9,7 +9,8 @@ def Parallelepiped(vertices):
 			glVertex3fv(vertices[vertex])
 	glEnd()
 
-vertices_1 = (
+
+vertices_base = (
 	(-1, -1, 1), 
 	(1, -1, 1), 
 	(-1, 3, 1), 
@@ -20,38 +21,49 @@ vertices_1 = (
 	(1, 3, -1) 
 	)
 
-vertices_2 = (
-	vertices_1[2], 
-	vertices_1[3], 
+vertices_1 = (
+	vertices_base[2],
+	vertices_base[3],
 	(-1, 7, 1), 
 	(1, 7, 1), 
-	vertices_1[6], 
-	vertices_1[7], 
+	vertices_base[6],
+	vertices_base[7],
 	(-1, 7, -1), 
 	(1, 7, -1) 
 	)
 
-vertices_3 = ( 
-	vertices_2[2],
-	vertices_2[3],
+vertices_2 = (
+	vertices_1[2],
+	vertices_1[3],
 	(-1, 11, 1), 
 	(1, 11, 1), 
-	vertices_2[6],
-	vertices_2[7],
+	vertices_1[6],
+	vertices_1[7],
 	(-1, 11, -1), 
 	(1, 11, -1)
+	)
+
+vertices_3 = (
+	vertices_2[2],
+	vertices_2[3],
+	(-1, 15, 1),
+	(1, 15, 1),
+	vertices_2[6],
+	vertices_2[7],
+	(-1, 15, -1),
+	(1, 15, -1)
 	)
 
 vertices_target = (
 	(-1, -1, 1),
 	(1, -1, 1),
-	(-1, 1, 1),
-	(1, 1, 1),
+	(-1, 3, 1),
+	(1, 3, 1),
 	(-1, -1, -1),
 	(1, -1, -1),
-	(-1, 1, -1),
-	(1, 1, -1)
-	)
+	(-1, 3, -1),
+	(1, 3, -1)
+)
 
 edges = (
 	(0,1),
