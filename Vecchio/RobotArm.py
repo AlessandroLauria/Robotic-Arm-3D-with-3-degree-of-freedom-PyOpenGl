@@ -167,7 +167,7 @@ class RobotArm:
 			theta_z = -theta_z
 
 		while t < 4:
-			w_target_base = position_controller_base.evaluate(theta_z, joint_base.theta, joint_base.w, delta_t)
+			w_target_base = position_controller_base.evaluate(theta_z, joint_base.theta, delta_t)
 			output_z = speed_controller_base.evaluate(w_target_base, joint_base.w, delta_t)
 			joint_base.evaluate(output_z, delta_t)
 			t = t + delta_t

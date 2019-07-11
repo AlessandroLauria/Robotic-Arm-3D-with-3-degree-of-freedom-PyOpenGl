@@ -1,4 +1,4 @@
-import pylab
+#import pylab
 import math
 
 GRAVITY = 9.81

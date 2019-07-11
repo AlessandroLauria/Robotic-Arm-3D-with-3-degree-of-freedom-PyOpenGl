@@ -1,7 +1,7 @@
 GRAVITY = 9.81
 import math
 
-class Pendolo:
+class Joint:
 
     def __init__(self, _M, _b, theta):
         self.w = 0

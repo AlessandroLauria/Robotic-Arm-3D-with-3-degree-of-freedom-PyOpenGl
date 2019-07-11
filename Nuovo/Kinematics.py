@@ -1,5 +1,6 @@
 import math
-class ConversionFunction:
+
+class Kinematics:
 
     def __init__(self):
         self.L1 = 2

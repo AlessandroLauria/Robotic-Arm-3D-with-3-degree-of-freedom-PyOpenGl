@@ -1,10 +1,5 @@
 # coding=utf-8
 
-
-
-#TODO: Refactoring codice
-#TODO: Decidere come gestire target non raggiungibili --> fare scaling del target.
-
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
@@ -13,24 +8,22 @@ import math
 
 from PositionController import *
 from SpeedController import *
-from Pendolo import *
+from Joint import *
 
-from ConversionFunction import *
+from Kinematics import *
 from Target import *
-
-
 
 
 class RobotArm:
 
-	def __init__(self, target, conversion):
+	def __init__(self, target, kinematics):
 		self.name = "Simple Robot Arm"
 		self.shoulder = 90.0
 		self.elbow = 0.0
 		self.arm = 0.0
 		self.base = 0
 		self.target = target
-		self.conversion = conversion
+		self.kinematics = kinematics
 
 	def run(self):
 		glutInit(sys.argv)
@@ -120,9 +113,7 @@ class RobotArm:
 			self.elbow = 0.0
 			self.arm = 0.0
 		elif (key == b't'):
-			self.follow_target_slowly()
-		elif (key == b'c'):
-			self.follow_target_controller(100, -100)
+			self.reach_target()
 		glutPostRedisplay()
 
 	def reshape(self, w, h):
@@ -135,15 +126,15 @@ class RobotArm:
 		glTranslatef (0.0, 0.0, -16.0)
 
 
-	def follow_target_slowly(self):
+	def reach_target(self):
 		#Local variable.
 		delta_t = 1e-1 # 1 ms
 		t = 0.0
 
-		joint_1 = Pendolo(6.0, 4.0, 90)
-		joint_2 = Pendolo(6.0, 4.0, 0)
-		joint_3 = Pendolo(6.0, 4.0, 0)
-		joint_base = Pendolo(6.0, 4.0, 0)
+		joint_1 = Joint(6.0, 4.0, 90)
+		joint_2 = Joint(6.0, 4.0, 0)
+		joint_3 = Joint(6.0, 4.0, 0)
+		joint_base = Joint(6.0, 4.0, 0)
 
 		speed_controller_1 = SpeedController(10000, 20000, 100, 100)
 		speed_controller_2 = SpeedController(10000, 20000, 100, 100)
@@ -158,9 +149,11 @@ class RobotArm:
 		#x, y, alpha = self.conversion.direct_kinematics(90, 0, 0)
 		#print("Punto-->", x, y, alpha)
 
-		theta_z = self.conversion.compute_theta_z(self.target.x, self.target.z)
+		theta_z = self.kinematics.compute_theta_z(self.target.x, self.target.z)
 
-		if(self.target.z > 0):
+		if(self.target.z > 0 and self.target.x > 0):
+			theta_z = -theta_z
+		elif (self.target.z < 0 and self.target.x < 0):
 			theta_z = -theta_z
 
 		while t < 4:
@@ -172,13 +165,15 @@ class RobotArm:
 			self.display()
 
 		t = 0
-		target_1, target_2, target_3 = self.conversion.inverse_kinematics(self.target.x-2, self.target.y, self.target.alpha)
+		if(self.target.x - 2< 0):
+			self.target.alpha = 3.14
+		th_target_1, th_target_2, th_target_3 = self.kinematics.inverse_kinematics(self.target.x-2, self.target.y, self.target.alpha)
 
 		while t < 10:
 			#Position controller
-			w_target_1 = position_controller_1.evaluate(target_1, joint_1.theta, delta_t)
-			w_target_2 = position_controller_2.evaluate(target_2, joint_2.theta, delta_t)
-			w_target_3 = position_controller_3.evaluate(target_3, joint_3.theta, delta_t)
+			w_target_1 = position_controller_1.evaluate(th_target_1, joint_1.theta, delta_t)
+			w_target_2 = position_controller_2.evaluate(th_target_2, joint_2.theta, delta_t)
+			w_target_3 = position_controller_3.evaluate(th_target_3, joint_3.theta, delta_t)
 			#Speed controller
 			output_1 = speed_controller_1.evaluate(w_target_1, joint_1.w, delta_t)
 			output_2 = speed_controller_2.evaluate(w_target_2, joint_2.w, delta_t)
