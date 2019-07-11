@@ -49,6 +49,7 @@ class RobotArm:
 		glRotatef(self.base, 0, 1, 0)
 		glPushMatrix()
 		glScalef(1.0, 0.2, 0.5)
+		glColor3ub(0, 255, 255)
 		Parallelepiped(vertices_base)
 		glPopMatrix()
 
@@ -56,7 +57,6 @@ class RobotArm:
 		glTranslatef(0, 0.60, 0)
 		glRotatef(self.shoulder, 0, 0, 1)
 		glTranslatef(1, -1, 0)
-		glColor3ub(0, 255, 255);
 		glPushMatrix()
 		glScalef(1.0, 0.2, 0.5)
 		Parallelepiped(vertices_1)
@@ -83,6 +83,7 @@ class RobotArm:
 		glPushMatrix()
 		glTranslatef(self.target.x, self.target.y, self.target.z)
 		glScalef(1.0, 0.2, 0.5)
+		glColor3ub(0, 255, 0);
 		Parallelepiped(vertices_target)
 		glPopMatrix()
 		glutSwapBuffers()
@@ -151,12 +152,18 @@ class RobotArm:
 
 		theta_z = self.kinematics.compute_theta_z(self.target.x, self.target.z)
 
-		if(self.target.z > 0 and self.target.x > 0):
-			theta_z = -theta_z
+		if(self.target.z < 0 and self.target.x > 0):
+			theta_z = theta_z
+		elif (self.target.z > 0 and self.target.x < 0):
+			theta_z = 180 - theta_z
 		elif (self.target.z < 0 and self.target.x < 0):
+			theta_z  = theta_z - 180
+		else: #entrambi positivi
 			theta_z = -theta_z
 
-		while t < 4:
+		print("Angolo di rotazione è: ", theta_z)
+		#theta_z = -90
+		while t < 50:
 			w_target_base = position_controller_base.evaluate(theta_z, joint_base.theta, delta_t)
 			output_z = speed_controller_base.evaluate(w_target_base, joint_base.w, delta_t)
 			joint_base.evaluate(output_z, delta_t)
@@ -165,11 +172,22 @@ class RobotArm:
 			self.display()
 
 		t = 0
-		if(self.target.x - 2< 0):
-			self.target.alpha = 3.14
-		th_target_1, th_target_2, th_target_3 = self.kinematics.inverse_kinematics(self.target.x-2, self.target.y, self.target.alpha)
 
-		while t < 10:
+		if(self.target.x <= 0):
+			self.target.alpha = 3.14
+		if self.target.x > 0:
+			th_target_1, th_target_2, th_target_3 = self.kinematics.inverse_kinematics(self.target.x-2, self.target.y, self.target.alpha)
+		else:
+			th_target_1, th_target_2, th_target_3 = self.kinematics.inverse_kinematics(self.target.x+2, self.target.y, self.target.alpha)
+
+		if self.target.x < 0 and self.target.y < 0:
+		 	th_target_1 = 360 + th_target_1
+
+		if(self.target.x <= 0 and self.target.y < 0):
+			th_target_3 = -360 + th_target_3
+
+		print("Th1-->", th_target_1,"Th2-->", th_target_2,"Th3-->", th_target_3)
+		while t < 50:
 			#Position controller
 			w_target_1 = position_controller_1.evaluate(th_target_1, joint_1.theta, delta_t)
 			w_target_2 = position_controller_2.evaluate(th_target_2, joint_2.theta, delta_t)
@@ -189,8 +207,9 @@ class RobotArm:
 			self.display()
 			#Increment t.
 			t = t + delta_t
+		x, y, alpha = self.kinematics.direct_kinematics(self.shoulder, self.elbow, self.arm)
 
 		#x, y, alpha = self.conversion.direct_kinematics(joint_1.theta, joint_2.theta, joint_3.theta)
-		#print("X-->", x, ", Y-->", y, ", alpha-->", alpha, ", angolo theta 3 -->", joint_base.theta)
+		print("X-->", x, ", Y-->", y, ", alpha-->", alpha)
 		#print("I target valgono:", target.x, target.y, target.z)
 
