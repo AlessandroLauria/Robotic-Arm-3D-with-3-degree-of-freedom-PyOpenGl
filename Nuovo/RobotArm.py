@@ -16,7 +16,7 @@ from Target import *
 
 class RobotArm:
 
-	def __init__(self, target, kinematics):
+	def __init__(self, target, kinematics, alpha):
 		self.name = "Simple Robot Arm"
 		self.shoulder = 90.0
 		self.elbow = 0.0
@@ -24,6 +24,7 @@ class RobotArm:
 		self.base = 0
 		self.target = target
 		self.kinematics = kinematics
+		self.alpha = alpha
 
 	def run(self):
 		glutInit(sys.argv)
@@ -152,18 +153,42 @@ class RobotArm:
 
 		theta_z = self.kinematics.compute_theta_z(self.target.x, self.target.z)
 
-		if(self.target.z < 0 and self.target.x > 0):
+		# la x target cambia in base alla z dopo la rotazione
+		x_respect_z = math.hypot(self.target.x, self.target.y)
+
+		if(self.target.z < 0 and x_respect_z > 0):
 			theta_z = theta_z
-		elif (self.target.z > 0 and self.target.x < 0):
+		elif (self.target.z > 0 and x_respect_z < 0):
 			theta_z = 180 - theta_z
-		elif (self.target.z < 0 and self.target.x < 0):
+		elif (self.target.z < 0 and x_respect_z < 0):
 			theta_z  = theta_z - 180
 		else: #entrambi positivi
 			theta_z = -theta_z
 
 		print("Angolo di rotazione è: ", theta_z)
-		#theta_z = -90
-		while t < 50:
+
+		t = 0
+
+		# sposta il target in base all'alpha passato
+		y_alpha = self.kinematics.L3 * math.sin(self.alpha)
+		x_alpha = self.kinematics.L3 * math.cos(self.alpha)
+
+		if(x_respect_z <= 0):
+			self.alpha += 3.14
+		if x_respect_z > 0:
+			th_target_1, th_target_2, th_target_3 = self.kinematics.inverse_kinematics(x_respect_z-x_alpha, self.target.y-y_alpha, self.alpha)
+		else:
+			th_target_1, th_target_2, th_target_3 = self.kinematics.inverse_kinematics(x_respect_z+x_alpha, self.target.y+y_alpha, self.alpha)
+
+		if x_respect_z < 0 and self.target.y < 0:
+		 	th_target_1 = 360 + th_target_1
+
+		if(x_respect_z <= 0 and self.target.y < 0):
+			th_target_3 = -360 + th_target_3
+
+		print("Th1-->", th_target_1,"Th2-->", th_target_2,"Th3-->", th_target_3)
+		while t < 30:
+			# Base rotation
 			w_target_base = position_controller_base.evaluate(theta_z, joint_base.theta, delta_t)
 			output_z = speed_controller_base.evaluate(w_target_base, joint_base.w, delta_t)
 			joint_base.evaluate(output_z, delta_t)
@@ -171,23 +196,6 @@ class RobotArm:
 			self.base = joint_base.theta
 			self.display()
 
-		t = 0
-
-		if(self.target.x <= 0):
-			self.target.alpha = 3.14
-		if self.target.x > 0:
-			th_target_1, th_target_2, th_target_3 = self.kinematics.inverse_kinematics(self.target.x-2, self.target.y, self.target.alpha)
-		else:
-			th_target_1, th_target_2, th_target_3 = self.kinematics.inverse_kinematics(self.target.x+2, self.target.y, self.target.alpha)
-
-		if self.target.x < 0 and self.target.y < 0:
-		 	th_target_1 = 360 + th_target_1
-
-		if(self.target.x <= 0 and self.target.y < 0):
-			th_target_3 = -360 + th_target_3
-
-		print("Th1-->", th_target_1,"Th2-->", th_target_2,"Th3-->", th_target_3)
-		while t < 50:
 			#Position controller
 			w_target_1 = position_controller_1.evaluate(th_target_1, joint_1.theta, delta_t)
 			w_target_2 = position_controller_2.evaluate(th_target_2, joint_2.theta, delta_t)

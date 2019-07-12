@@ -1,7 +1,7 @@
 from RobotArm import *
 
-target = Target(0, 4, 0)
+target = Target(2, -3, -5)
 #Per fare la conversione diretta, inversa, computare l'angolo di rotazione per la z. Prende in input la lunghezza delle braccia.
 kinematics = Kinematics(2, 2, 2)
-app = RobotArm(target, kinematics)
+app = RobotArm(target, kinematics, alpha = 0.75)
 app.run()

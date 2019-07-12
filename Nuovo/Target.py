@@ -4,5 +4,4 @@ class Target:
         self.x = x
         self.y = y
         self.z = z
-        self.alpha = 0
 
