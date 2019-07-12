@@ -4,7 +4,6 @@
     <list default="true" id="0acb5a3a-58b7-49a3-8af7-fbb000ad730a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/Nuovo/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Nuovo/Main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Nuovo/RobotArm.py" beforeDir="false" afterPath="$PROJECT_DIR$/Nuovo/RobotArm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Nuovo/Target.py" beforeDir="false" afterPath="$PROJECT_DIR$/Nuovo/Target.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,20 +13,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Nuovo/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="9" lean-forward="true" selection-start-line="6" selection-start-column="9" selection-end-line="6" selection-end-column="9" />
+            <state relative-caret-position="30">
+              <caret line="2" column="19" selection-start-line="2" selection-start-column="19" selection-end-line="2" selection-end-column="19" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Nuovo/RobotArm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="385">
-              <caret line="185" column="51" lean-forward="true" selection-start-line="185" selection-start-column="51" selection-end-line="185" selection-end-column="51" />
+            <state relative-caret-position="250">
+              <caret line="176" column="42" selection-start-line="176" selection-start-column="42" selection-end-line="176" selection-end-column="42" />
               <folding>
                 <element signature="e#16#39#0" expanded="true" />
               </folding>
@@ -305,20 +304,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Nuovo/Main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="9" lean-forward="true" selection-start-line="6" selection-start-column="9" selection-end-line="6" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Nuovo/RobotArm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="385">
-          <caret line="185" column="51" lean-forward="true" selection-start-line="185" selection-start-column="51" selection-end-line="185" selection-end-column="51" />
+        <state relative-caret-position="250">
+          <caret line="176" column="42" selection-start-line="176" selection-start-column="42" selection-end-line="176" selection-end-column="42" />
           <folding>
             <element signature="e#16#39#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Nuovo/Main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="19" selection-start-line="2" selection-start-column="19" selection-end-line="2" selection-end-column="19" />
         </state>
       </provider>
     </entry>

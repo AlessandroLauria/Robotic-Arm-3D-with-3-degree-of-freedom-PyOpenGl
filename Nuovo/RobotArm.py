@@ -174,7 +174,7 @@ class RobotArm:
 		x_alpha = self.kinematics.L3 * math.cos(self.alpha)
 
 		if(x_respect_z <= 0):
-			self.alpha += 3.14
+			self.alpha = 3.14 - self.alpha
 		if x_respect_z > 0:
 			th_target_1, th_target_2, th_target_3 = self.kinematics.inverse_kinematics(x_respect_z-x_alpha, self.target.y-y_alpha, self.alpha)
 		else:
