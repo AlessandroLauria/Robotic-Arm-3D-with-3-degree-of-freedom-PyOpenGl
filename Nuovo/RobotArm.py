@@ -130,8 +130,7 @@ class RobotArm:
 
 	def reach_target(self):
 		#Local variable.
-		delta_t = 1e-1 # 1 ms
-		t = 0.0
+		delta_t = 0.02
 
 		joint_1 = Joint(6.0, 4.0, 90)
 		joint_2 = Joint(6.0, 4.0, 0)
@@ -154,8 +153,9 @@ class RobotArm:
 		theta_z = self.kinematics.compute_theta_z(self.target.x, self.target.z)
 
 		# la x target cambia in base alla z dopo la rotazione
-		x_respect_z = math.hypot(self.target.x, self.target.y)
+		x_respect_z = math.hypot(self.target.x, self.target.z)
 
+		# Per sistmare l'angolo di rotazione della base.
 		if(self.target.z < 0 and x_respect_z > 0):
 			theta_z = theta_z
 		elif (self.target.z > 0 and x_respect_z < 0):
@@ -173,17 +173,21 @@ class RobotArm:
 		y_alpha = self.kinematics.L3 * math.sin(self.alpha)
 		x_alpha = self.kinematics.L3 * math.cos(self.alpha)
 
+		# Il target sarà a sinistra, quindi alpha sarà specchiato.
 		if(x_respect_z <= 0):
 			self.alpha = 3.14 - self.alpha
+
+		# Separiamo i casi, se la nuova x è maggiore di 0 togliamo x_alpha e y_alpha. Altrimenti li sommiamo
 		if x_respect_z > 0:
 			th_target_1, th_target_2, th_target_3 = self.kinematics.inverse_kinematics(x_respect_z-x_alpha, self.target.y-y_alpha, self.alpha)
 		else:
 			th_target_1, th_target_2, th_target_3 = self.kinematics.inverse_kinematics(x_respect_z+x_alpha, self.target.y+y_alpha, self.alpha)
 
+		#Casi vari, se siamo a sinistra e in basso allora sommiamo 360 al theta1 target.
 		if x_respect_z < 0 and self.target.y < 0:
 		 	th_target_1 = 360 + th_target_1
 
-		if(x_respect_z <= 0 and self.target.y < 0):
+		if x_respect_z <= 0 and self.target.y < 0:
 			th_target_3 = -360 + th_target_3
 
 		print("Th1-->", th_target_1,"Th2-->", th_target_2,"Th3-->", th_target_3)
