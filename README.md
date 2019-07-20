@@ -12,3 +12,7 @@ After the program running, type on your keyboard the follow keys to test it:
   - 'z','x','c','v','a','s','q','w','e','p': rotate single joint
   
 If you want to change the target position (or alpha angle) modify value on the file Main.py
+
+## Screen
+
+![alt text](image.png)
