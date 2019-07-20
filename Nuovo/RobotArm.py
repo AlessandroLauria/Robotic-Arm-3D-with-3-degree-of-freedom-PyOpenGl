@@ -147,43 +147,40 @@ class RobotArm:
 		position_controller_3 = PositionController(40, 10, 10)
 		position_controller_base = PositionController(40, 10, 10)
 
-		#x, y, alpha = self.conversion.direct_kinematics(90, 0, 0)
-		#print("Punto-->", x, y, alpha)
-
 		theta_z = self.kinematics.compute_theta_z(self.target.x, self.target.z)
 
-		# la x target cambia in base alla z dopo la rotazione
+		# if z is not 0, x target change with respect z
 		x_respect_z = math.hypot(self.target.x, self.target.z)
 
-		# Per sistmare l'angolo di rotazione della base.
+		# estimate the rotation of the entire arm and adjust the sign
 		if(self.target.z < 0 and x_respect_z > 0):
 			theta_z = theta_z
 		elif (self.target.z > 0 and x_respect_z < 0):
 			theta_z = 180 - theta_z
 		elif (self.target.z < 0 and x_respect_z < 0):
 			theta_z  = theta_z - 180
-		else: #entrambi positivi
+		else: # both postive
 			theta_z = -theta_z
 
-		print("Angolo di rotazione è: ", theta_z)
+		print("Rotation arm theta: ", theta_z)
 
 		t = 0
 
-		# sposta il target in base all'alpha passato
+		# value to add at x,y reach by second joint with respect alpha
 		y_alpha = self.kinematics.L3 * math.sin(self.alpha)
 		x_alpha = self.kinematics.L3 * math.cos(self.alpha)
 
-		# Il target sarà a sinistra, quindi alpha sarà specchiato.
+		# target at the left, alpha assume opposite angle
 		if(x_respect_z <= 0):
 			self.alpha = 3.14 - self.alpha
 
-		# Separiamo i casi, se la nuova x è maggiore di 0 togliamo x_alpha e y_alpha. Altrimenti li sommiamo
+		# if x > 0 substract x_alpha and y_alpha, else add them
 		if x_respect_z > 0:
 			th_target_1, th_target_2, th_target_3 = self.kinematics.inverse_kinematics(x_respect_z-x_alpha, self.target.y-y_alpha, self.alpha)
 		else:
 			th_target_1, th_target_2, th_target_3 = self.kinematics.inverse_kinematics(x_respect_z+x_alpha, self.target.y+y_alpha, self.alpha)
 
-		#Casi vari, se siamo a sinistra e in basso allora sommiamo 360 al theta1 target.
+		# Another check 
 		if x_respect_z < 0 and self.target.y < 0:
 		 	th_target_1 = 360 + th_target_1
 
@@ -221,7 +218,5 @@ class RobotArm:
 			t = t + delta_t
 		x, y, alpha = self.kinematics.direct_kinematics(self.shoulder, self.elbow, self.arm)
 
-		#x, y, alpha = self.conversion.direct_kinematics(joint_1.theta, joint_2.theta, joint_3.theta)
 		print("X-->", x, ", Y-->", y, ", alpha-->", alpha)
-		#print("I target valgono:", target.x, target.y, target.z)
 
