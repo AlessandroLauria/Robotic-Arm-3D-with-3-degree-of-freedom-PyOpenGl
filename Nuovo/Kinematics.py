@@ -27,7 +27,7 @@ class Kinematics:
 
         return th1, th2, th3
 
-    # Input in gradi
+    # Input in degrees
     def direct_kinematics(self, th1, th2, th3):
         th1 = math.radians(th1)
         th2 = math.radians(th2)
@@ -38,6 +38,7 @@ class Kinematics:
         return x, y, alpha
 
 
+    # compute the rotation degree of the Arm
     def compute_theta_z(self, target_x, target_z):
         if target_z == 0:
             return 0
