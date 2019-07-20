@@ -12,7 +12,6 @@ class PositionController:
         delta_t):
         distance = target_position - current_position
 
-        # calcoliamo il segno e usiamo distanze sempre positive
         if distance >= 0:
             s = 1
         else:
@@ -20,15 +19,13 @@ class PositionController:
             distance = -distance
 
         if distance < self.__decel_distance:
-            # ok siamo nella fase di decelerazione
+            # decelartion
             vel_attesa = \
               math.sqrt(self.__max_speed * self.__max_speed - \
                           2 * self.__decel * \
                 (self.__decel_distance - distance))
             if vel_attesa > self.__output_speed:
-                # uhm... strana condizione,
-                # vuol dire che siamo ancora in accelerazione (fase 1)
-                # continuiamo ad accelerare
+                # Still in acceleration phase
                 self.__output_speed += self.__accel * delta_t
                 # controlliamo se abbiamo comunque raggiunto
                 # (e superato) la velocita' attesa
@@ -38,18 +35,18 @@ class PositionController:
                 if self.__output_speed > self.__max_speed:
                     self.__output_speed = self.__max_speed
             else:
-                # qui siamo effettivamente in decelerazione
+                # deceleration phase
                 self.__output_speed = vel_attesa
 
         else:
-            # non siamo nella fase di decelerazione quindi...
+            # aceleration phase
             if self.__output_speed < self.__max_speed:
-                # se non siamo gia' a velocita' massima, acceleriamo
+                # if we are not already a maximum speed, we accelerate
                 self.__output_speed += self.__accel * delta_t
-                # ma evitiamo sempre di superare la velocita' massima
+                # but we always avoid exceeding the maximum speed
                 if self.__output_speed > self.__max_speed:
                     self.__output_speed = self.__max_speed
 
-        # applichiamo il segno
+        # apply sign
         return s * self.__output_speed
 
